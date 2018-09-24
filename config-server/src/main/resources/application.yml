@@ -1,0 +1,26 @@
+server:
+  port: 9999
+spring:
+  application:
+    name: config-server  #全部小写
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
+  instance:
+    prefer-ip-address: true # 使用ip地址注册到eureka server
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port} # eureka server中看到的status显示为具体的ip地址和port
+
+feign:
+  hystrix:
+    enabled: true
+
+

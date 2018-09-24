@@ -1,0 +1,18 @@
+server:
+  port: 9006
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/   # 注册中心地址
+#  instance:
+#    prefer-ip-address: true # 使用ip地址注册到eureka server
+#    instance-id: ${spring.cloud.client.ipAddress}:${server.port} # eureka server中看到的status显示为具体的ip地址和port
+
+from: default-test123 456
+person:
+  name: cycloneboy 1999
+  age: 25
+
+config:
+  demo: test-config 123

@@ -1,0 +1,28 @@
+server:
+  port: 8006
+spring:
+  application:
+    name: config-client  #全部小写
+  profiles:
+    active: dev
+
+  cloud:
+    config:
+      name: config-client
+      uri: http://localhost:9999/
+      fail-fast: true
+      profile: dev  #服务环境名称  例如 {name}-{profile} = service-gateway-dev.yml
+
+management:
+  endpoint:
+    refresh:
+      enabled: false
+
+
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8000/eureka/
+#  instance:
+#    prefer-ip-address: true # 使用ip地址注册到eureka server
+#    instance-id: ${spring.clould.client.ipAddress}:${server.port} # 在eureka server中看到的status显示为具体的ip地址和port
