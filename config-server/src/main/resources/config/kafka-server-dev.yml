@@ -11,8 +11,8 @@ eureka:
 
 from: default-test123 456
 person:
-  name: cycloneboy 1999
-  age: 25
+  name: cycloneboy 1992
+  age: 20
 
 config:
   demo: test-config 123

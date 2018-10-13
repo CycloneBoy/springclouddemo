@@ -13,6 +13,7 @@ spring:
       fail-fast: true
       profile: dev  #服务环境名称  例如 {name}-{profile} = service-gateway-dev.yml
 
+
 management:
   endpoint:
     refresh:
