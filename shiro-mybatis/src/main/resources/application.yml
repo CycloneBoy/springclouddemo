@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/springclouddemo?characterEncoding=utf8&useSSL=false
+    username: root
+    password: 123456
+
+
+
+
+mybatis-plus:
+#  mapper-locations: classpath:mapper/*Mapper.xml
+  mapper-locations: classpath:com/cycloneboy/shiromybatis/mapper/xml/*Mapper.xml
+  type-aliases-package:  com.cycloneboy.shiromybatis.entity
+
