@@ -10,8 +10,11 @@
         <module name="config-server" />
         <module name="consumer-server" />
         <module name="eureka-server" />
+        <module name="kafka-client" />
         <module name="kafka-server" />
         <module name="producer-server" />
+        <module name="shiro-admin" />
+        <module name="shiro-mybatis" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,8 +22,11 @@
       <module name="config-server" target="1.8" />
       <module name="consumer-server" target="1.8" />
       <module name="eureka-server" target="1.8" />
+      <module name="kafka-client" target="1.8" />
       <module name="kafka-server" target="1.8" />
       <module name="producer-server" target="1.8" />
+      <module name="shiro-admin" target="1.8" />
+      <module name="shiro-mybatis" target="1.8" />
       <module name="springclouddemo" target="1.5" />
     </bytecodeTargetLevel>
   </component>

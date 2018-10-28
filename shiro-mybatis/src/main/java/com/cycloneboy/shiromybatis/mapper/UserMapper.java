@@ -1,8 +1,7 @@
 package com.cycloneboy.shiromybatis.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cycloneboy.shiromybatis.entity.User;
-import org.apache.ibatis.annotations.Mapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * <p>
@@ -10,9 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author cycloneboy
- * @since 2018-10-24
+ * @since 2018-10-28
  */
-@Mapper
 public interface UserMapper extends BaseMapper<User> {
 
 }

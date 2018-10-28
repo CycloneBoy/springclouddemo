@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author cycloneboy
- * @since 2018-10-24
+ * @since 2018-10-28
  */
 @TableName("tbl_user")
 public class User extends Model<User> {
@@ -26,7 +26,7 @@ public class User extends Model<User> {
     private Integer id;
 
     /**
-     * 名称
+     * 账号
      */
     private String username;
 
@@ -34,6 +34,11 @@ public class User extends Model<User> {
      * 密码
      */
     private String password;
+
+    /**
+     * 名称
+     */
+    private String name;
 
     /**
      * 盐，用于加密
@@ -75,6 +80,14 @@ public class User extends Model<User> {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getSalt() {
         return salt;
     }
@@ -110,9 +123,15 @@ public class User extends Model<User> {
         "id=" + id +
         ", username=" + username +
         ", password=" + password +
+        ", name=" + name +
         ", salt=" + salt +
         ", state=" + state +
         ", description=" + description +
         "}";
+    }
+
+    public  String getCredentialsSalt(){
+        System.out.println("获取用户登录名和盐值：" + this.username + this.salt );
+        return this.username + this.salt;
     }
 }

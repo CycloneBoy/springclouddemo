@@ -5,8 +5,11 @@
     <file url="file://$PROJECT_DIR$/config-server" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/consumer-server" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/eureka-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/kafka-client" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/kafka-server" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/producer-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shiro-admin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shiro-mybatis" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
