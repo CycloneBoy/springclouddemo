@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="fragments/layout">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>home</title>
+    <script th:src="@{js/jquery-3.1.1.js}"></script>
+</head>
+<body >
+
+<div th:include="fragments/nav :: nav"></div>
+
+
+
+
+<div layout:fragment="prompt">
+    当前位置：首页 &gt; <em>首页</em>
+</div>
+
+<div layout:fragment="content">
+
+   <h1>主页</h1>
+
+
+    <p>请选择下列选项：</p>
+    <ol>
+        <li><a href="product/list.html" th:href="@{/product/list}">产品列表</a> </li>
+        <li><a href="order/list.html" th:href="@{/order/list}">订单列表</a> </li>
+        <li><a href="subscribe.html" th:href="@{/subscribe}">订阅我们的邮件列表</a> </li>
+        <li><a href="userprofile.html" th:href="@{/userprofile}">查看用户信息</a> </li>
+    </ol>
+
+
+
+
+
+
+    <!--<div th:replace="fragments/footer :: footer">@ 2018 The Static Templates</div>-->
+
+    <div th:include="fragments/footer :: footer"></div>
+</div>
+
+</body>
+
+</html>

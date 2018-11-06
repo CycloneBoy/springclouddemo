@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../css/layui.css" th:href="@{/css/layui.css}">
+
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"
+          href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script th:src="@{/js/jquery.min.js}" src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script th:src="@{/js/popper.min.js}" src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script th:src="@{/js/ootstrap.min.js}" src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+
+<div th:include="fragments/nav :: nav"></div>
+
+    <div class="layui-body container">
+
+            <h1>我的第一个 Bootstrap 页面</h1>
+            <p>这是一些文本。</p>
+            <button type="button" class="btn btn-primary">主要按钮</button>
+
+            <table id="demo" lay-filter="test"></table>
+
+
+    </div>
+<div th:include="fragments/footer :: footer"></div>
+</div>
+<script src="../src/layui.js" th:src="@{/js/layui.js}"></script>
+<script  th:inline="none">
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            ,height: 312
+            ,url: '/user/userList' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+                ,{field: 'username', title: '用户名', width:80}
+                ,{field: 'name', title: '名称', width:80}
+                ,{field: 'password', title: '密码', width:200, sort: true}
+                ,{field: 'salt', title: '盐', width:200}
+                ,{field: 'state', title: '状态', width: 80}
+                ,{field: 'description', title: '描述', width: 80, sort: true}
+            ]]
+        });
+
+    });
+</script>
+</body>
+</html>
