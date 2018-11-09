@@ -17,8 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class PageResultDTO {
 
-    private Long total;
+    private Integer code;
 
-    private List<?> rows;
+    private String msg;
+
+    private Long count;
+
+    private Object data;
 
 }

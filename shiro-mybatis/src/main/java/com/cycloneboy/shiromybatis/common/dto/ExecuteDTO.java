@@ -15,13 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ExecuteDTO {
 
-    private Integer code;
+    private Boolean success;
 
-    private String msg;
+    private String message;
 
-    private Integer count;
-
-    private Object data;
+    private Object value;
 
 }
 

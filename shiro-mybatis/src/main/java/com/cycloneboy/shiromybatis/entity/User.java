@@ -131,7 +131,7 @@ public class User extends Model<User> {
     }
 
     public  String getCredentialsSalt(){
-        System.out.println("获取用户登录名和盐值：" + this.username + this.salt );
+//        System.out.println("获取用户登录名和盐值：" + this.username + this.salt );
         return this.username + this.salt;
     }
 }
