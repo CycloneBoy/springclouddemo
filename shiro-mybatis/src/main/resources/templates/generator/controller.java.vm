@@ -1,0 +1,181 @@
+package ${package.Controller};
+
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cycloneboy.shiromybatis.common.dto.ExecuteDTO;
+import com.cycloneboy.shiromybatis.common.dto.Ids;
+import com.cycloneboy.shiromybatis.common.dto.PageResultDTO;
+
+import com.cycloneboy.${package.ModuleName}.entity.${entity};
+import com.cycloneboy.${package.ModuleName}.service.${table.serviceName};
+
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器 RESTful API
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+    #if(${superControllerClass})
+    public class ${table.controllerName} extends ${superControllerClass} {
+    #else
+    public class ${table.controllerName} {
+    #end
+
+
+    @Autowired
+    private ${table.serviceName} ${table.name}Service;
+
+    /**
+     * $!{table.comment}添加;
+     * @return
+     */
+    @ApiOperation(value = "添加${entity}", notes = "添加${entity}对象实体", httpMethod = "POST")
+    @PostMapping("/")
+    //    @RequiresPermissions("${table.name}Info:add")//权限管理;
+    public ExecuteDTO ${table.name}Create(@RequestBody ${entity} entity){
+        log.info("begin ${table.name}Create");
+
+        Boolean result=${table.name}Service.save(entity);
+        log.info("保存${entity}："+result + " " + entity.getId() );
+
+        log.info("end ${table.name}Create");
+        return new ExecuteDTO(result,result ? "保存成功":"保存失败",entity);
+
+    }
+
+    /**
+     * $!{table.comment}删除;
+     * @return
+     */
+    @ApiOperation(value = "删除${entity}", notes = "删除${entity}对象实体", httpMethod = "DELETE")
+    @DeleteMapping("/{id}")
+    //    @RequiresPermissions("${table.name}Info:del")//权限管理;
+    public ExecuteDTO ${table.name}Remove(@PathVariable int id){
+        log.info("begin ${table.name}Remove");
+        Boolean result=${table.name}Service.removeById(id);
+        log.info("删除${entity}：Id = "+id+" result: "+result);
+        return new ExecuteDTO(result,result ? "删除成功":"删除失败",id);
+    }
+
+    /**
+     * $!{table.comment}批量删除;
+     * @return
+     */
+    @ApiOperation(value = "批量删除${entity}", notes = "批量删除${entity}对象实体", httpMethod = "DELETE")
+    @DeleteMapping("/")
+    //    @RequiresPermissions("${table.name}Info:del")//权限管理;
+    public ExecuteDTO ${table.name}RemoveByIdList(@RequestBody Ids ids){
+        log.info("begin ${table.name}RemoveByIdList");
+
+        log.info("ids: " + ids.toString() );
+
+        Boolean result=${table.name}Service.removeByIds(ids.getIds());
+
+        log.info("end ${table.name}RemoveByIdList");
+        return new ExecuteDTO(result,result ? "批量删除成功":"批量删除失败",ids);
+    }
+
+
+
+    /**
+     * $!{table.comment}修改
+     */
+    @ApiOperation(value = "修改${entity}", notes = "修改${entity}对象实体", httpMethod = "PUT")
+    @PutMapping(value = "/{id}")
+    public ExecuteDTO ${table.name}Update(@PathVariable Integer id,@RequestBody ${entity} entity){
+        log.info("修改$!{table.comment}："+entity);
+        ${entity} exitEntity=${table.name}Service.getById(id);
+        if(exitEntity==null){
+        return new ExecuteDTO(false,"修改失败:实体不存在",entity.getId());
+        }
+
+        entity.setId(id);
+        Boolean result=${table.name}Service.updateById(entity);
+        log.info("end ${table.name}Update");
+        return new ExecuteDTO(result,result?"修改成功":"修改失败",entity);
+    }
+
+    /**
+     * 根据ID$!{table.comment}查询
+     */
+    @ApiOperation(value = "获取指定${entity}", notes = "获取指定${entity}", httpMethod = "GET")
+    @GetMapping(value = "/{id}")
+    public ExecuteDTO ${table.name}GetById(@PathVariable Integer id){
+            log.info("获取指定${entity}："+id);
+            ${entity} entity =  ${table.name}Service.getById(id);
+            log.info("end ${table.name}GetById");
+            return new ExecuteDTO(entity != null,entity != null ? "查询成功":"查询失败",entity);
+    }
+
+
+    /**
+     * $!{table.comment}列表查询.
+     * @return
+     */
+    @ApiOperation(value = "获取指定${entity}列表", notes = "获取指定${entity}列表", httpMethod = "GET")
+    @GetMapping(value = "/list")
+    //    @RequiresPermissions("${table.name}Info:view")//权限管理;
+    public PageResultDTO ${table.name}List(@RequestParam(name = "page") int page,
+    @RequestParam(name = "limit") int limit,
+    @RequestParam(name = "name",defaultValue ="") String name  ){
+        log.info("begin ${table.name}List");
+
+        Page<${entity}> page1 =  new Page(page, limit);
+
+        QueryWrapper<${entity}> queryWrapper = new QueryWrapper();
+        if (name != ""){
+        queryWrapper.like("name",name);
+        log.info("search name: " + name);
+        }
+
+        IPage ${table.name}Page = ${table.name}Service.page(page1, queryWrapper);
+
+        //log.info("分页查询： " + page1.getTotal() + " " + page1.getRecords());
+        //log.info("查询结果： " + ${table.name}Page.getTotal() + " " + ${table.name}Page.getCurrent() + " " + ${table
+        .name}Page.getPages());
+        PageResultDTO pageResultDTO = new PageResultDTO(200,"$!{table.comment}列表", page1.getTotal(),
+        ${table.name}Page.getRecords());
+
+        log.info("end ${table.name}List");
+        return pageResultDTO;
+    }
+
+    
+
+}
+
+#end

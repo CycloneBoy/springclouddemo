@@ -37,12 +37,13 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">所有商品</a>
+                    <a class="" href="javascript:;">数据管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="javascript:;">列表三</a></dd>
-                        <dd><a href="">超链接</a></dd>
+                        <dd><a href="javascript:;" th:href="@{/user}">用户</a></dd>
+                        <dd><a href="javascript:;" th:href="@{/role}">角色</a></dd>
+                        <dd><a href="javascript:;" th:href="@{/permission}">权限</a></dd>
+                        <dd><a href="javascript:;" th:href="@{/user/role}">用户角色</a></dd>
+                        <dd><a href="javascript:;" th:href="@{/role/permission}">角色权限</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">

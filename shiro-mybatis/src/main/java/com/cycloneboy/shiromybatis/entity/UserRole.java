@@ -1,7 +1,13 @@
 package com.cycloneboy.shiromybatis.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -12,10 +18,19 @@ import java.io.Serializable;
  * @author cycloneboy
  * @since 2018-10-28
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("tbl_user_role")
 public class UserRole extends Model<UserRole> {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 自增主键
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     /**
      * 用户ID
@@ -28,32 +43,11 @@ public class UserRole extends Model<UserRole> {
     private Integer roleId;
 
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
 
     @Override
     protected Serializable pkVal() {
-        return null;
+        return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "UserRole{" +
-        "userId=" + userId +
-        ", roleId=" + roleId +
-        "}";
-    }
+
 }

@@ -10,3 +10,4 @@
 ### 更新历史
 * 2018.09.24 kafka进行消息通信 
 * 2018.10.29 shiro 、mybatis可以登录成功
+* 2018.11.10 shiro-mybatis 添加swagger2

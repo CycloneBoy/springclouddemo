@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../css/layui.css" th:href="@{/layui/css/layui.css}">
+
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"
+          href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script th:src="@{/js/jquery.min.js}" src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script th:src="@{/js/popper.min.js}" src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script th:src="@{/js/bootstrap.min.js}"
+            src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+
+    <div th:include="fragments/nav :: nav"></div>
+
+    <div class="layui-body container">
+
+        <div class="demoTable">
+            按名称搜索：
+            <div class="layui-inline">
+                <input class="layui-input" id="demoReload"  name="keyword" autocomplete="off">
+            </div>
+            <button class="layui-btn" data-type="reload">搜索</button>
+            <button class="layui-btn" data-type="addUserClick">添加</button>
+        </div>
+
+
+        <table id="demo" lay-filter="test"></table>
+
+        <!--编辑-->
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">删除选中行数据</button>
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+                <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+            </div>
+        </script>
+
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
+
+    </div>
+    <div th:include="fragments/footer :: footer"></div>
+</div>
+
+<!--添加或编辑-->
+<div id="setUser" class="layer_self_wrap" style="display:none;">
+    <form id="userForm" class="layui-form layui-form-pane" lay-filter="userForm" method="post" action="">
+        <div class="layui-form-item" hidden>
+            <label class="layui-form-label">id</label>
+            <div class="layui-input-inline">
+                <input id="id" name="id"  autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-inline">
+                <input id="role" name="role" placeholder="请输入角色名称" class="layui-input" type="text"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">角色描述</label>
+            <div class="layui-input-block">
+                <textarea name="description" placeholder="请输入角色描述" class="layui-textarea"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input  type="radio" name="available" value=0 title="无效" >
+                <input  type="radio" name="available" value=1 title="有效" >
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin-left: 10px;">
+                <button class="layui-btn"  lay-submit="" lay-filter="userSubmit">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="../js/layui.js" th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script  th:inline="none">
+    layui.use(['table','layer','form'], function(){
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        var pageCurr;
+
+        // CRUD url
+        var URL_LIST = "/shiromybatis/role/list";
+        var URL_CREATE = "/shiromybatis/role/";
+        var URL_UPDATE =   "/shiromybatis/role/";
+        var URL_DELETE_IDS = "/shiromybatis/role/";
+        var URL_DELETE = "/shiromybatis/role/";
+        var ENTITY_NAME = '角色';
+
+        var TABLE_COLS = [[ //表头
+            {type: 'checkbox', fixed: 'left'}
+            ,{field: 'id', title: 'ID', width:60, sort: true, fixed: 'left'}
+            ,{field: 'role', title: '角色名称',sort: true, width:100}
+            ,{field: 'available', title: '状态',sort: true, width: 80}
+            ,{field: 'description', title: '角色描述', width: 100, sort: true}
+            ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:200}
+        ]];
+
+        //展示数据表格
+        tableIns=table.render({
+            elem: '#demo'
+            ,url: URL_LIST //数据接口
+            ,method: 'get' //默认：get请求
+            ,height: 450
+            ,toolbar: '#toolbarDemo'
+            ,title: ENTITY_NAME+'数据表'
+            ,page: true //开启分页
+            ,id: 'testReload'
+            ,cellMinWidth: 80
+            ,request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                ,limitName: 'limit' //每页数据量的参数名，默认：limit
+            },response:{
+                statusName: 'code' //数据状态的字段名称，默认：code
+                ,statusCode: 200 //成功的状态码，默认：0
+                ,countName: 'count' //数据总数的字段名称，默认：count
+                ,dataName: 'data' //数据列表的字段名称，默认：data
+            }
+            ,cols: TABLE_COLS
+            ,  done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                //console.log(res);
+                //得到当前页码
+                //console.log(curr);
+                //得到数据总量
+                //console.log(count);
+                pageCurr=curr;
+            }
+        });
+
+        //搜索 ----------------------------------------------- Begin-----------------------------------------------------------
+        var $ = layui.$, active =
+                {
+                    reload: function () {
+                        var demoReload = $('#demoReload').val();//获取输入框的值
+                        console.log(demoReload)
+                        //执行重载
+                        table.reload('testReload',
+                                {
+                                    page:
+                                            {
+                                                curr: 1 //重新从第 1 页开始
+                                            }
+                                    , where: {
+                                        role:demoReload
+                                    }
+                                });
+                    },
+
+                    // 添加用户
+                    addUserClick: function () {
+                        $("input").val("");
+                        form.render();
+                        layer.open(
+                                {
+                                    type: 1,
+                                    title: ENTITY_NAME+'信息添加页面',
+                                    shadeClose: true,
+                                    shade: 0.8,
+                                    // area: ['880px', '550px'],
+                                    content: $('#setUser'),//跳转的页面
+                                    cancel: function ()
+                                    {
+                                        $(".layui-laypage-btn").click();//这里用于关闭Open时触发回调函数  刷新父页面数据  一定要引入Jquery
+                                    }
+
+                                });
+                    }
+                };
+        //这个是用于创建点击事件的实例
+        $('.demoTable .layui-btn').on('click', function ()
+        {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        //搜索 ----------------------------------------------- End-----------------------------------------------------------
+
+        //监听工具条 ----------------------------------------------- Begin-----------------------------------------------------------
+        table.on('tool(test)', function (obj) {    //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent == 'detail'){
+                detailUser(data,data.id);
+            }else if (layEvent == 'edit') {
+                editUser(data,data.id);
+            } else if (layEvent == 'del') { //删除数据
+                delUser(data,data.id);
+            }
+        });
+
+        //监听工具条 ----------------------------------------------- ENd-----------------------------------------------------------
+
+        //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    // 批量删除实体，根据ID list
+                    var data = checkStatus.data;
+                    //layer.alert(JSON.stringify(data));
+                    idList=[];
+                    data.forEach(function (item,i) {
+                        idList.push(item.id)
+                    });
+
+                    console.log("ids: ",idList);
+                    console.log("ids: ",JSON.stringify({'ids': idList}));
+                    $.ajax({
+                        url: URL_DELETE_IDS,
+                        type: "DELETE",
+                        data: JSON.stringify({'ids': idList}),
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        success: function(data){
+
+                            if(data.success==1){
+                                layer.msg(data.message, {icon: 6,time:1000,end:function () {
+                                        window.location.reload();
+                                    }});
+                            }else{
+                                layer.msg(data.message, {icon: 5, time:1000,end:function () {
+                                        window.location.reload();
+                                    }});
+                            }
+                        }
+
+                    });
+
+
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+            };
+        });
+
+        // 表单提交
+        form.on('submit(userSubmit)', function(data){
+            formSubmit(data);
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        //提交表单 ,增加和修改
+        function formSubmit(obj) {
+            var url = obj.field.id == "" ? URL_CREATE : URL_UPDATE + obj.field.id;
+            var type = obj.field.id == "" ?"POST":"PUT";
+            console.info("url: " + url);
+            console.info("type: " + type);
+            //校验 TODO
+            $.ajax({
+                type: type,
+                data: JSON.stringify(obj.field),
+                dataType: "json",
+                url: url ,
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    console.log(data);
+                    if (data.success) {
+                        layer.closeAll();
+                        load(obj);
+                    } else {
+                        layer.closeAll();
+                        //加载load方法
+                        load(obj);//自定义
+                    }
+                },
+                error: function (data) {
+                    layer.alert("操作请求错误，请您稍后再试");
+                }
+            });
+        }
+
+        // 删除用户
+        function delUser(obj,id) {
+            layer.confirm('真的删除ID: '+obj.id  +  '的行么', function(){
+                console.log(obj);
+                console.log("id: " + obj.id)
+                $.ajax({
+                    url: URL_DELETE + obj.id,
+                    type: "DELETE",
+                    dataType: "json",
+                    success: function(data){
+
+                        if(data.success){
+                            //回调弹框
+                            layer.alert(data.message,{icon: 6},function(){
+                                layer.closeAll();
+                                //加载load方法
+                                load(obj);//自定义
+                            });
+                        }else{
+                            layer.alert(data.message,{icon: 5},function(){
+                                layer.closeAll();
+                                //加载load方法
+                                load(obj);//自定义
+                            });
+                        }
+                    }
+
+                });
+            });
+
+        }
+
+        // 批量删除用户
+        function delUserByIds(obj) {
+
+        }
+
+        // 编辑用户
+        function editUser(obj,id) {
+            console.log(obj);
+            form.val( 'userForm',obj);
+            form.render();
+
+            layer.open(
+                    {
+                        type: 1,
+                        title: ENTITY_NAME+'信息编辑页面',
+                        shadeClose: true,
+                        shade: 0.8,
+                        // area: ['880px', '550px'],
+                        content: $('#setUser'),//跳转的页面
+                        cancel: function (index)
+                        {
+                            $(".layui-laypage-btn").click();//这里用于关闭Open时触发回调函数  刷新父页面数据  一定要引入Jquery
+                        }
+
+                    });
+        }
+
+        // 查看用户
+        function detailUser(obj,id) {
+            // layer.msg('ID: ' + data.id + ' 的查看操作');
+            form.val( 'userForm',obj);
+            form.render();
+
+            layer.open(
+                    {
+                        type: 1,
+                        title: ENTITY_NAME+'信息详情页面',
+                        shadeClose: true,
+                        shade: 0.8,
+                        // area: ['880px', '550px'],
+                        content: $('#setUser'),//跳转的页面
+                        cancel: function (index)
+                        {
+                            $(".layui-laypage-btn").click();//这里用于关闭Open时触发回调函数  刷新父页面数据  一定要引入Jquery
+                        }
+
+                    });
+
+        }
+
+        // 重新加载
+        function load(obj){
+            //重新加载table
+            tableIns.reload('testReload',{
+                where: obj.field
+                , page: {
+                    curr: pageCurr //从当前页码开始
+                }
+            });
+        }
+    });
+
+</script>
+</body>
+</html>

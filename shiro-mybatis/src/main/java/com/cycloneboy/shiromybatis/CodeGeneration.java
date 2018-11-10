@@ -2,12 +2,15 @@ package com.cycloneboy.shiromybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: springclouddemo
@@ -28,7 +31,8 @@ public class CodeGeneration {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir("D:\\java\\idea\\a2018\\springcloud\\springclouddemo\\shiro-mybatis\\src\\main\\java");
+//        gc.setOutputDir("D:\\java\\idea\\a2018\\springcloud\\springclouddemo\\shiro-mybatis\\src\\main\\java");
+        gc.setOutputDir("D:\\mybatisPlusGen\\cloud");
         gc.setFileOverride(true);
         gc.setActiveRecord(true);// 不需要ActiveRecord特性的请改为false
         gc.setEnableCache(false);// XML 二级缓存
@@ -62,7 +66,7 @@ public class CodeGeneration {
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);
         strategy.setSuperMapperClass(null);
-
+        strategy.setRestControllerStyle(true);
         mpg.setStrategy(strategy);
 
         // 包配置
@@ -74,8 +78,30 @@ public class CodeGeneration {
         pc.setMapper("mapper");
         pc.setEntity("entity");
 //        pc.setXml("xml");
+        pc.setModuleName("shiromybatis");
         mpg.setPackageInfo(pc);
 
+        // 注入自定义配置，可以在 VM 中使用 cfg.abc 【可无】
+        InjectionConfig cfg = new InjectionConfig() {
+            @Override
+            public void initMap() {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("abc", this.getConfig().getGlobalConfig().getAuthor() + "-mp");
+                this.setMap(map);
+            }
+        };
+
+        // 自定义 xxList.jsp 生成
+        List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
+        focList.add(new FileOutConfig("/templates/generator/front.html.vm") {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输入文件名称
+                return "D:\\mybatisPlusGen\\cloud\\" + tableInfo.getEntityName() + ".html";
+            }
+        });
+        cfg.setFileOutConfigList(focList);
+        mpg.setCfg(cfg);
 
 //        // 调整 xml 生成目录演示
 //        List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
@@ -93,7 +119,9 @@ public class CodeGeneration {
 //        tc.setXml(null);
 //        mpg.setTemplate(tc);
 
-
+        TemplateConfig tc2 = new TemplateConfig();
+        tc2.setController("/templates/generator/controller.java.vm");
+        mpg.setTemplate(tc2);
 
         // 执行生成
         mpg.execute();

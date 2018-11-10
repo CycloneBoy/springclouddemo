@@ -1,7 +1,13 @@
 package com.cycloneboy.shiromybatis.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -12,10 +18,19 @@ import java.io.Serializable;
  * @author cycloneboy
  * @since 2018-10-28
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("tbl_role_permission")
 public class RolePermission extends Model<RolePermission> {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 自增主键
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     /**
      * 角色ID
@@ -28,32 +43,10 @@ public class RolePermission extends Model<RolePermission> {
     private Integer permissionId;
 
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public Integer getPermissionId() {
-        return permissionId;
-    }
-
-    public void setPermissionId(Integer permissionId) {
-        this.permissionId = permissionId;
-    }
-
     @Override
     protected Serializable pkVal() {
-        return null;
+        return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "RolePermission{" +
-        "roleId=" + roleId +
-        ", permissionId=" + permissionId +
-        "}";
-    }
+
 }

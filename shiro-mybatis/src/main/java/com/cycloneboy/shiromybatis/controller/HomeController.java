@@ -28,6 +28,30 @@ public class HomeController {
         return "home/test";
     }
 
+    @RequestMapping("/user")
+    public String authUser(){
+        return "auth/user";
+    }
+
+    @RequestMapping("/role")
+    public String authRole(){
+        return "auth/role";
+    }
+
+    @RequestMapping("/permission")
+    public String authPermission(){
+        return "auth/permission";
+    }
+
+    @RequestMapping("/user/role")
+    public String authUserRole(){
+        return "auth/userRole";
+    }
+
+    @RequestMapping("/role/permission")
+    public String authRolePermission(){
+        return "auth/rolePermission";
+    }
 
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Map<String, Object> map) throws Exception{
