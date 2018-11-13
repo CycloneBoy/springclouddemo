@@ -9,9 +9,12 @@ import com.cycloneboy.shiromybatis.common.dto.Ids;
 import com.cycloneboy.shiromybatis.common.dto.PageResultDTO;
 
 import com.cycloneboy.shiromybatis.entity.Role;
+import com.cycloneboy.shiromybatis.entity.UserRole;
 import com.cycloneboy.shiromybatis.service.RoleService;
 
 
+import com.cycloneboy.shiromybatis.service.UserRoleService;
+import com.cycloneboy.shiromybatis.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,10 @@ import org.springframework.web.bind.annotation.*;
 
 
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -39,6 +46,9 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private UserRoleService userRoleService;
 
     /**
      * 角色表添加;
@@ -154,7 +164,28 @@ public class RoleController {
         return pageResultDTO;
     }
 
-    
+    @ApiOperation(value = "根据用户ID获取指定Role列表", notes = "根据用户IDRole列表", httpMethod = "POST")
+    @PostMapping("/rolesWithSelected")
+    public List<Role> rolesWithSelected(Integer uid){
+        log.info("begin rolesWithSelected");
+        List<UserRole> userRoleList =
+                userRoleService.list(new QueryWrapper<UserRole>().lambda().eq(UserRole::getUserId,uid));
+
+        Set roleIdSet = new HashSet();
+        userRoleList.forEach((role) -> roleIdSet.add(role.getRoleId()));
+
+        List<Role> roleList = roleService.list(null);
+        roleList.forEach((role) -> {
+            if(roleIdSet.contains(role.getId())){
+                role.setAvailable(1);
+            }else{
+                role.setAvailable(0);
+            }
+        });
+
+        log.info("end rolesWithSelected");
+        return roleList;
+    }
 
 }
 

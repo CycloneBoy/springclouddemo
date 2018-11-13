@@ -15,4 +15,10 @@
         id, role, description, available
     </sql>
 
+    <select id="queryRoleListWithSelectedUserId" parameterType="int" resultType="com.cycloneboy.shiromybatis.entity.Role">
+        SELECT r.id,r.role,r.description,
+               (CASE WHEN (SELECT ur.role_id FROM tbl_user_role ur WHERE ur.user_id= #{id} AND ur.role_id = r.id) THEN 1
+                     ELSE 0 END) AS available
+        FROM tbl_role r
+    </select>
 </mapper>

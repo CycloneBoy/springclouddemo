@@ -92,6 +92,25 @@ public class UserController {
     }
 
 
+    /**
+     * 用户批量删除;
+     * @return
+     */
+    @ApiOperation(value = "批量修改User的角色", notes = "批量修改User的角色", httpMethod = "DELETE")
+    @PutMapping("/{userId}/role/")
+//    @RequiresPermissions("userInfo:del")//权限管理;
+    public ExecuteDTO userAddRolesByIdList(@PathVariable Integer userId, @RequestBody Ids ids){
+        log.info("begin userAddRoleByIdList");
+
+        log.info("userId: " + String.valueOf(userId ));
+        log.info("ids: " + ids.toString() );
+
+        boolean result = true;
+
+        log.info("end userAddRoleByIdList");
+        return new ExecuteDTO(result,result ? "批量修改User的角色":"批量修改User的角色",ids);
+    }
+
 
     /**
      * 修改用户
