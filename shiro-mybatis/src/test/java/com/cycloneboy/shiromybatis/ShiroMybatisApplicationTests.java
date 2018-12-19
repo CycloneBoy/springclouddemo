@@ -90,4 +90,14 @@ public class ShiroMybatisApplicationTests {
         Object obj = new SimpleHash(hashAlgorithName, password, credentialsSalt, hashIterations);
         System.out.println("Md5加密后的密码：" + obj);
     }
+
+    @Test
+    public void testGetPassword2(){
+        String hashAlgorithName = "MD5";
+        String password = "123456";
+        int hashIterations = 1;//加密次数
+//        ByteSource credentialsSalt = ByteSource.Util.bytes("admin8d78869f470951332959580424d4bf4f");
+        Object obj = new SimpleHash(hashAlgorithName, password,"", hashIterations);
+        System.out.println("Md5加密后的密码：" + obj);
+    }
 }

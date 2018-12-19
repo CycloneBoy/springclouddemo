@@ -8,6 +8,8 @@ import com.cycloneboy.shiromybatis.common.dto.Ids;
 import com.cycloneboy.shiromybatis.common.dto.PageResultDTO;
 
 import com.cycloneboy.shiromybatis.entity.User;
+import com.cycloneboy.shiromybatis.entity.UserRole;
+import com.cycloneboy.shiromybatis.service.UserRoleService;
 import com.cycloneboy.shiromybatis.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -17,6 +19,11 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -34,6 +41,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRoleService userRoleService;
 
     /**
      * 用户添加;
@@ -93,7 +103,7 @@ public class UserController {
 
 
     /**
-     * 用户批量删除;
+     * 批量修改User的角色;
      * @return
      */
     @ApiOperation(value = "批量修改User的角色", notes = "批量修改User的角色", httpMethod = "DELETE")
@@ -106,6 +116,33 @@ public class UserController {
         log.info("ids: " + ids.toString() );
 
         boolean result = true;
+        List<UserRole> userRoleList =
+                userRoleService.list(new QueryWrapper<UserRole>().lambda().eq(UserRole::getUserId,userId));
+
+        Set<Integer> roleSet = new HashSet<>(ids.getIds());
+        List<Integer> deleteRoleListId = new ArrayList<>();
+        userRoleList.forEach(userRole -> {
+            if (roleSet.contains(userRole.getRoleId())){
+                roleSet.remove(userRole.getRoleId());
+            }else{
+                deleteRoleListId.add(userRole.getId());
+            }
+        });
+
+        log.info("roleset need to save : " + roleSet.toString());
+        log.info("rolelist need delete : " + deleteRoleListId.toString());
+
+        if (!roleSet.isEmpty()){
+            roleSet.forEach(roleid ->{
+                userRoleService.save(new UserRole(userId,roleid));
+                log.info("save userrole: " + userId + " " + roleid);
+            });
+        }
+
+        if (deleteRoleListId.size() > 0){
+            userRoleService.removeByIds(deleteRoleListId);
+            log.info("remove userrole: " + deleteRoleListId.toString());
+        }
 
         log.info("end userAddRoleByIdList");
         return new ExecuteDTO(result,result ? "批量修改User的角色":"批量修改User的角色",ids);

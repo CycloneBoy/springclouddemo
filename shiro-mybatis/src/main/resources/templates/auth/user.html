@@ -73,7 +73,7 @@
         </div>
 
         <div class="layui-form-item">
-            <div class="layui-input-inline" id="assigRolesDiv">
+            <div class="layui-input" id="assigRolesDiv">
 
             </div>
         </div>
@@ -367,17 +367,26 @@
         function assginRoleSubmit(obj) {
             var select_userid = obj.field.user_id
             var select_roleids = obj.field.role_id
+            console.log(obj.field)
+
             console.info("select_userid: " + select_userid);
             console.info("select_roleids: " + select_roleids);
-            var role_ids = new Array();
-            $.each($('input:checkbox:checked'),function () {
-                console.log(  $('input[type=checkbox]:checked').length+"个，其中有："+$(this).val());
-                role_ids.push($(this).val());
-            });
-            console.log(role_ids);
+
+            //选中的角色
+            var array = new Array();
+            var roleCheckd=$(".layui-form-checked");
+            //获取选中的权限id
+            console.log($(roleCheckd));
+            for(var i=0;i<roleCheckd.length;i++){
+                array.push($(roleCheckd.get(i)).prev().val());
+               console.log("val  " + $(roleCheckd.get(i)).prev().val());
+            }
+            console.log(array);
+            $("#roleIds").val(roleIds);
+
             $.ajax({
                 type: "PUT",
-                data: JSON.stringify({'ids': role_ids}),
+                data: JSON.stringify({'ids': array}),
                 dataType: "json",
                 url: URL_USER_ADD_ROLES + select_userid + "/role/",
                 contentType: "application/json;charset=utf-8",
@@ -385,11 +394,11 @@
                     console.log(data);
                     if(data.success==1){
                         layer.msg(data.message, {icon: 6,time:1000,end:function () {
-                                window.location.reload();
+                                 // window.location.reload();
                             }});
                     }else{
                         layer.msg(data.message, {icon: 5, time:1000,end:function () {
-                                window.location.reload();
+                                // window.location.reload();
                         }});
                     }
                 },
@@ -533,23 +542,27 @@
 
                     var idHtm = $("#assigRolesIDDiv");
                     idHtm.empty();
-                    idHtm.append($(" <input id='user_id' name='user_id'  value='" + id + "' class='layui-input'/>"))
+                    idHtm.append($(" <input id='user_id' name='user_id'  value='" + id + "' class='layui-input' disabled='disabled'/>"))
+                    idHtm.append($("  <input id='roleIds' type='hidden' name='roleIds'/>"))
 
-                    var htm=$("#assigRolesDiv");
-                    htm.empty();
-                    $.each(data,function(index,obj){
-                        var deptOption = null;
-                            if(obj.available==1){
-                                 deptOption=$("<br><input type='checkbox' name='role_id['"+obj.id+ "]' value='"+obj.id+
-                                     "' checked "
-                                     + " >"+obj.description+"</input>");
-                            }else{
-                                 deptOption=$("<br><input type='checkbox'  name='role_id['"+obj.id+ "]' value='"+obj.id+   " '>"+obj.description+"</input>");
-                            }
+                    //显示角色数据
+                    $("#assigRolesDiv").empty();
+                    $.each(data, function (index, item) {
+                        var roleInput=$("<input type='checkbox' name='role_id' value="+item.id+" title="+item.description+" lay-skin='primary'/>");
+                        var div=$("<div class='layui-unselect layui-form-checkbox' lay-skin='primary'>" +
+                            "<span>"+item.description+"</span><i class='layui-icon'>&#xe626;</i>" +
+                            "</div>");
+                        if(item.available==1){
+                            roleInput=$("<input type='checkbox' name='role_id' value="+item.id+" title="+item.description+" lay-skin='primary' checked='checked'/>");
+                            div=$("<div class='layui-unselect layui-form-checkbox  layui-form-checked' lay-skin='primary'>" +
+                                "<span>"+item.description+"</span><i class='layui-icon'>&#xe627;</i>" +
+                                "</div>");
+                        }
 
-                        console.log(obj.id , obj.available == 1? " checked " : " " )
-                        htm.append(deptOption);
+                        $("#assigRolesDiv").append(roleInput).append(div);
                     });
+
+
 
                     /* 再弹出添加界面 */
                     layer.open(
@@ -560,12 +573,6 @@
                             shade: 0.8,
                             // area: ['880px', '550px'],
                             content: $("#assignRoles").html(),//跳转的页面
-                            // yes:function(index,layero){
-                            //     console.log("关闭分配角色信息页面：",index);
-                            //
-                            //     layer.closeAll();
-                            //     load(obj);
-                            // },
                             cancel: function () {
                                 layer.closeAll();
                                 load(obj);

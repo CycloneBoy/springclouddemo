@@ -19,7 +19,6 @@ import java.io.Serializable;
  * @since 2018-10-28
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @TableName("tbl_user_role")
 public class UserRole extends Model<UserRole> {
@@ -42,7 +41,12 @@ public class UserRole extends Model<UserRole> {
      */
     private Integer roleId;
 
+    public UserRole(){}
 
+    public UserRole(Integer userId,Integer roleId){
+        this.userId = userId;
+        this.roleId = roleId;
+    }
 
     @Override
     protected Serializable pkVal() {

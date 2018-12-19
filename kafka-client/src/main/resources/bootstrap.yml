@@ -1,0 +1,24 @@
+server:
+  port: 8013
+spring:
+  application:
+    name: kafka-client  #全部小写
+  profiles:
+    active: dev
+
+  cloud:
+    config:
+      name: kafka-client
+      uri: http://localhost:9999/
+      fail-fast: true
+      profile: dev  #服务环境名称  例如 {name}-{profile} = service-gateway-dev.yml
+
+
+management:
+  endpoint:
+    refresh:
+      enabled: true
+
+
+
+

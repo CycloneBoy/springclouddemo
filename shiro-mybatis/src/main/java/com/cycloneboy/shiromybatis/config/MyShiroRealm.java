@@ -22,7 +22,7 @@ import java.util.List;
  * @author: cycloneboy
  * @create:2018-10-28 10:22
  **/
-public class MyShiroRealm  extends AuthorizingRealm {
+public class   MyShiroRealm  extends AuthorizingRealm {
 
     @Autowired
     private UserService userService;

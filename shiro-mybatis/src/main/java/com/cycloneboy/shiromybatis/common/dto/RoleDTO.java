@@ -1,23 +1,20 @@
 package com.cycloneboy.shiromybatis.common.dto;
 
+import com.cycloneboy.shiromybatis.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @program: springclouddemo
  * @description:
  * @author: cycloneboy
- * @create:2018-11-10 16:58
+ * @create:2018-11-11 14:21
  **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ids {
+public class RoleDTO extends Role {
 
-    private List<Integer> ids = new ArrayList();
-
+    private Integer selected;
 }
