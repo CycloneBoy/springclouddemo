@@ -10,7 +10,7 @@ spring:
       ddl-auto: update
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://47.106.251.161:3306/springclouddemo?characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/springclouddemo?characterEncoding=utf8&useSSL=false
     username: root
     password: 123456@sl
     type: com.alibaba.druid.pool.DruidDataSource
