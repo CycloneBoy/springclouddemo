@@ -18,7 +18,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public User findById(Long id){
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElse(new User());
         return user;
     }
 
