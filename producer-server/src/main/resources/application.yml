@@ -42,10 +42,11 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8000/eureka/
+      defaultZone: http://peer1:8000/eureka/
   instance:
     prefer-ip-address: true
-
+    metadata-map:
+      my-metadata : 我自己定义的元数据
 info:
   app:
     name: @project.artifactId@

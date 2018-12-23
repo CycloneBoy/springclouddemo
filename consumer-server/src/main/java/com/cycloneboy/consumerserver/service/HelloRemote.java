@@ -10,4 +10,5 @@ public interface HelloRemote {
     @RequestMapping(value = "/hello")
     public String index(@RequestParam(value = "name") String name);
 
+
 }

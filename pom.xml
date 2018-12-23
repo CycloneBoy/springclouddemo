@@ -15,5 +15,10 @@
         <module>consumer-server</module>
         <module>config-server</module>
         <module>config-client</module>
+        <module>kafka-client</module>
+        <module>kafka-server</module>
+        <module>gateway-server</module>
+        <module>shiro-admin</module>
+        <module>shiro-mybatis</module>
     </modules>
 </project>

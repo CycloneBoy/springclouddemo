@@ -1,12 +1,12 @@
 server:
-  port: 9001
+  port: 9010
 spring:
   application:
-    name: consumer-server  #全部小写
+    name: gateway-server  #全部小写
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://peer1:8000/eureka/
+      defaultZone: http://localhost:8000/eureka/
   instance:
     prefer-ip-address: true

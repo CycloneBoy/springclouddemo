@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
 /**
  * create by CycloneBoy on 2018-12-21 00:48
  */
@@ -17,7 +18,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/{id}")
+
+    @GetMapping(value = "/user/{id}")
     public User findById(@PathVariable(name = "id") String id){
         log.info("get user by id {}",id);
         return userService.findById(Long.valueOf(id));

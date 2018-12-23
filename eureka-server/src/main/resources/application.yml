@@ -2,6 +2,14 @@
 spring:
   application:
     name: eureka-server  #全部小写
+server:
+  port: 8000
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
 ---
 spring:
   profiles: peer1
@@ -13,8 +21,8 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-    serviceUrl:
-      defaultZone: http://peer2:8001/eureka/
+#    serviceUrl:
+#      defaultZone: http://peer2:8001/eureka/
 ---
 spring:
   profiles: peer2
